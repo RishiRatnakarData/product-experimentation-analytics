@@ -4,8 +4,9 @@
 
 A reproducible product-analytics system that connects event modeling, user-level funnel and cohort SQL, controlled-experiment inference, experiment planning, and leakage-aware retention modeling to a launch decision.
 
-> > **Data disclosure:** The controlled experiment is simulated with a fixed seed and a documented 2.5-percentage-point treatment effect. Its results demonstrate analytical method and are not observations from a real company. The GA4 query is a separate real-data analysis executed by the author against Google's public, obfuscated ecommerce sample.
-> ![Power BI Executive Overview](docs/images/dashboard-executive-overview.png)
+> **Data disclosure:** The controlled experiment is simulated with a fixed seed and a documented 2.5-percentage-point treatment effect. Its results demonstrate analytical method and are not observations from a real company. The GA4 query is a separate real-data analysis executed by the author against Google's public, obfuscated ecommerce sample.
+
+![Power BI Executive Overview](docs/images/dashboard-executive-overview.png)
 
 ## Business problem
 
@@ -17,7 +18,7 @@ A fictional subscription product needs to identify funnel loss, evaluate a signu
 - How much sensitivity does the experiment have at its realized sample size?
 - Can week-four activity be ranked using only information available by the end of day 13?
 
-## Verified results
+## Key results
 
 The full seeded run generated 20,000 users and 129,937 events spanning January 1 through June 29, 2025. All 20 persisted data-quality checks passed, and the automated suite contains 11 tests.
 
@@ -55,7 +56,7 @@ flowchart TD
 
 The generator keeps event-grain behavior separate from one-row-per-user assignment and outcomes. DuckDB SQL collapses events to user flags before calculating funnels, preventing active users from being double-counted. Details and table grains are documented in [docs/architecture.md](docs/architecture.md).
 
-## Analytical implementation
+## Technical implementation
 
 ### Funnel and cohorts
 
@@ -81,7 +82,7 @@ The logistic model predicts activity during days 28–34 using signup attributes
 
 The model provides modest ranking value, not causal inference. Threshold choice is illustrative and would require intervention capacity and cost information in production. Temporal drift, synthetic-data assumptions, and calibration should be monitored before deployment.
 
-## Reproduce locally
+## Run locally
 
 Python 3.12 is used in CI.
 
@@ -107,21 +108,9 @@ python -m src.pipeline --users 20000 --days 180 --seed 42
 
 Generated Parquet, DuckDB, CSV, and JSON files are intentionally ignored by Git. The full run writes reproducible analytical outputs to `artifacts/` and source tables to `data/generated/`.
 
-## Outputs and table grains
+Output grains and field definitions are documented in the [architecture](docs/architecture.md) and [data dictionary](docs/data_dictionary.md).
 
-| Output | Grain |
-|---|---|
-| `users.parquet` | One row per synthetic user and assignment |
-| `events.parquet` | One row per generated product event |
-| `experiment_outcomes.parquet` | One row per user experiment outcome |
-| `funnel.csv` | One row per ordered funnel step |
-| `funnel_by_segment.csv` | One row per channel, segment, and variant |
-| `cohort_retention.csv` | One row per signup week and observable activity week |
-| `experiment_results.csv` | One row per primary or guardrail metric |
-| `retention_predictions.csv` | One row per chronological holdout user |
-| `quality_report.csv` | One row per validation rule |
-
-## Power BI and BigQuery
+## Power BI report
 
 The completed four-page Power BI report presents experiment outcomes, funnel performance, cohort retention, model evaluation, and persisted data-quality checks. All displayed totals were validated against the reproducible full-run artifacts.
 
@@ -129,6 +118,8 @@ The completed four-page Power BI report presents experiment outcomes, funnel per
 - [Conversion Funnel](docs/images/dashboard-conversion-funnel.png)
 - [Cohort Retention](docs/images/dashboard-cohort-retention.png)
 - [Model & Data Quality](docs/images/dashboard-model-data-quality.png)
+
+## BigQuery execution
 
 `sql/bigquery_ga4_funnel.sql` provides a separate user-level funnel for Google's public, obfuscated GA4 ecommerce sample; it does not contain the simulated experiment. The author executed the Standard SQL query in BigQuery Sandbox project `rishi-analytics-portfolio` on September 11, 2026. The job processed 47.93 MB, billed 48 MB, completed in 2.8 seconds, and returned five ordered stages: 93,552 session starts, 19,122 item viewers, 3,827 cart users, 1,401 checkout users, and 1,069 purchasers. [View query results](docs/images/bigquery-ga4-funnel-results.png) and [view job information](docs/images/bigquery-ga4-job-information.png).
 
