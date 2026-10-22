@@ -1,0 +1,2 @@
+# Additive plotting dependency; existing product-analytics requirements cover pandas/SciPy/pytest.
+matplotlib>=3.8,<4

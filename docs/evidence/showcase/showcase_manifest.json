@@ -1,0 +1,28 @@
+{
+  "scope": "seeded synthetic subscription experiment",
+  "users": 20000,
+  "events": 129937,
+  "generated_chart_paths": [
+    "docs/images/showcase_effects.png",
+    "docs/images/showcase_conversion.png",
+    "docs/images/showcase_channel.png",
+    "docs/images/showcase_retention.png",
+    "docs/images/showcase_subgroups.png"
+  ],
+  "gallery": [
+    "Executive overview",
+    "Conversion funnel",
+    "Cohort retention",
+    "Model and data quality"
+  ],
+  "primary_absolute_lift": 0.027621037238543922,
+  "primary_p_value": 1.0494396272185033e-06,
+  "guardrail_columns": [
+    "active_week_4",
+    "support_contact_day_14"
+  ],
+  "exploratory_subgroups": 7,
+  "srm_flag": false,
+  "decision": "candidate_for_monitored_review",
+  "note": "Not evidence of live product impact; aggregated result from deterministic simulation."
+}

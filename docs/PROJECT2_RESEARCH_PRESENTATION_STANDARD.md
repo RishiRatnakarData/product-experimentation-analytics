@@ -1,0 +1,3 @@
+# Portfolio presentation standard — Project 2
+
+Lead with analytical outcomes and visuals, then architecture and decisions. Keep all synthetic / real-world dataset boundaries explicit. Avoid second-person tutorial voice, empty technology lists, unsupported revenue claims, and overstatements about causality. Preserve deep methodology and reproducibility in supporting docs rather than above the fold. Put real Power BI screenshots in the gallery, not invented dashboard mockups. Use empirical metrics from the exact seeded run only; regenerate before changing reported values. Published evidence includes aggregate results and generated charts, never user-level input files.

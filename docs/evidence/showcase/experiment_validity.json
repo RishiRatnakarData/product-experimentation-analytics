@@ -1,0 +1,83 @@
+{
+  "analysis_type": "retrospective_simulated_experiment_audit",
+  "unit": "assigned_user",
+  "method": "two-sided pooled two-proportion z-test; unpooled normal 95% confidence interval; chi-square SRM check",
+  "alpha": 0.05,
+  "practical_lift_threshold": 0.01,
+  "srm": {
+    "observed_control": 9918,
+    "observed_treatment": 10082,
+    "expected_treatment_fraction": 0.5,
+    "chi_square": 1.3448,
+    "p_value": 0.24618924912503423,
+    "threshold": 0.001,
+    "flagged": false
+  },
+  "primary": {
+    "column": "converted",
+    "label": "Subscription conversion",
+    "control_n": 9918,
+    "treatment_n": 10082,
+    "control_successes": 1846,
+    "treatment_successes": 2155,
+    "control_rate": 0.18612623512805002,
+    "treatment_rate": 0.21374727236659394,
+    "absolute_lift": 0.027621037238543922,
+    "relative_lift": 0.14839948392842828,
+    "ci_low": 0.01654371699643175,
+    "ci_high": 0.038698357480656094,
+    "p_value": 1.0494396272185033e-06,
+    "direction": "primary",
+    "significant_harm": null
+  },
+  "guardrails": [
+    {
+      "column": "active_week_4",
+      "label": "Active Week 4",
+      "control_n": 9918,
+      "treatment_n": 10082,
+      "control_successes": 2659,
+      "treatment_successes": 2739,
+      "control_rate": 0.2680984069368824,
+      "treatment_rate": 0.2716722872445943,
+      "absolute_lift": 0.0035738803077118853,
+      "relative_lift": 0.013330479462913306,
+      "ci_low": -0.008730278414522513,
+      "ci_high": 0.015878039029946285,
+      "p_value": 0.5691733759741917,
+      "direction": "increase",
+      "significant_harm": false
+    },
+    {
+      "column": "support_contact_day_14",
+      "label": "Support Contact Day 14",
+      "control_n": 9918,
+      "treatment_n": 10082,
+      "control_successes": 683,
+      "treatment_successes": 713,
+      "control_rate": 0.06886469046178666,
+      "treatment_rate": 0.07072009521920254,
+      "absolute_lift": 0.001855404757415885,
+      "relative_lift": 0.026942758981040624,
+      "ci_low": -0.005206907329522911,
+      "ci_high": 0.00891771684435468,
+      "p_value": 0.6066475110798342,
+      "direction": "decrease",
+      "significant_harm": false
+    }
+  ],
+  "power_planning": {
+    "power_target": 0.8,
+    "n_per_arm_reference": 9918,
+    "mde_approx": 0.015730485017739042,
+    "assumptions": "Equal-arm approximation, two-sided z-test, independent users; not achieved/post-hoc power"
+  },
+  "decision": "candidate_for_monitored_review",
+  "caveats": [
+    "Simulated randomized outcomes; no observed commercial impact or production launch recommendation.",
+    "Users, not event rows, are the inferential unit. No silent de-duplication or outcome exclusions.",
+    "Guardrail significance is not proof of equivalence or absence of meaningful harm; confidence intervals should be reviewed.",
+    "This retrospective audit does not establish a prospective preregistration or sequential-peeking policy.",
+    "Guardrail analyses and any subgroup exploration are not multiplicity-adjusted."
+  ]
+}
