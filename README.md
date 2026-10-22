@@ -1,111 +1,110 @@
 # Product Experimentation & Customer Analytics
 
-**A product analytics and experimentation platform combining A/B test inference, behavioral funnels, cohort retention, predictive modeling, and executive reporting.**
+**An end-to-end product analytics project combining randomized-experiment evaluation, SQL funnels, retention modeling, and executive reporting.**
 
-**Stack:** Python · SQL · DuckDB · SciPy · scikit-learn · BigQuery · Power BI · GitHub Actions
+**Python · SQL · DuckDB · SciPy · scikit-learn · BigQuery · Power BI · GitHub Actions**
 
-> **Data scope:** The subscription experiment uses reproducible synthetic data, not real users or actual company performance. The public GA4 BigQuery extension is a separate dataset.
+![Product analytics reporting overview](docs/images/dashboard-executive-overview.png)
 
-## Project highlights
+[**Dashboard gallery**](#dashboard-gallery) · [**Results**](#selected-results) · [**Experiment evidence**](#experiment-and-retention-evidence) · [**Architecture**](#solution-architecture) · [**Technical evidence**](#technical-evidence)
 
-| Experiment scale | Conversion lift | Experiment validation | Reporting |
-|---|---|---|---|
-| **20,000 simulated users** | **+2.76 pp** | **SRM p = 0.2462** | **4-page Power BI report** |
+## Project overview
 
-For this seeded synthetic run, conversion increased from **18.61% (control)** to **21.37% (treatment)**. The estimated absolute lift was **+2.76 pp** (approximate 95% CI: **+1.65 to +3.87 percentage points**, two-sided p = **1.05e-06**).
+A subscription-product analytics case study spanning acquisition, conversion, and customer retention. The system models user-level experiment assignments and behavioral events, builds funnel and cohort views in DuckDB, evaluates treatment effects and guardrails, and reports retention-model performance.
 
-## Experiment and analytics showcase
+**Data scope:** The controlled experiment uses reproducible **synthetic data**, not real users or observed company results. The separate public GA4 analysis, where included, uses an independent obfuscated ecommerce dataset.
 
-### Experiment outcome
+## Selected results
 
-![Simulated treatment and control conversion comparison](docs/images/showcase_conversion.png)
+| Area | Verified simulated-run result | Evidence |
+|---|---|---|
+| Experiment scale | **20,000 simulated users**; 129,937 generated events | [Aggregate results](docs/evidence/showcase/experiment_validity.json) |
+| Conversion | **18.61% → 21.37%** (control → treatment) | [Experiment decision memo](docs/evidence/showcase/experiment_validity_memo.md) |
+| Treatment effect | **+2.76 percentage points**, approximate 95% CI **[+1.65, +3.87]**; p = **1.05e-06** | [Methods](docs/EXPERIMENT_VALIDITY_METHOD.md) |
+| Allocation quality | SRM p = **0.2462**; not flagged | [Aggregate results](docs/evidence/showcase/experiment_validity.json) |
+| Reporting | Four-page Power BI report and validated user-grain SQL views | [Power BI measures](docs/power_bi.md) |
 
-### Treatment effect and guardrails
+The experiment's treatment effect is embedded in a deterministic simulation; its measured lift demonstrates analytical implementation rather than live business impact.
 
-![Experiment effect sizes and confidence intervals](docs/images/showcase_effects.png)
+## Dashboard gallery
 
-### Acquisition-channel performance
+The reporting layer brings the experiment, acquisition funnel, customer cohorts, and model/data quality into one Power BI experience.
 
-![Simulated channel conversion performance](docs/images/showcase_channel.png)
+| Executive overview | Conversion funnel |
+| :---: | :---: |
+| [![Executive overview](docs/images/dashboard-executive-overview.png)](docs/images/dashboard-executive-overview.png) | [![Conversion funnel](docs/images/bigquery-ga4-funnel-results.png)](docs/images/bigquery-ga4-funnel-results.png) |
 
-### Retention guardrail
+| Cohort retention | Model and data quality |
+| :---: | :---: |
+| [![Cohort retention](docs/images/dashboard-cohort-retention.png)](docs/images/dashboard-cohort-retention.png) | [![Model and data quality](docs/images/dashboard-model-data-quality.png)](docs/images/dashboard-model-data-quality.png) |
 
-![Simulated week-four active-user rates](docs/images/showcase_retention.png)
+## Experiment and retention evidence
 
-### Exploratory segment effects
+**Experiment outcome and uncertainty.** The primary treatment effect was evaluated using user-level assignments and an independent control-versus-treatment comparison. Guardrails and sample-ratio checks accompany the result.
 
-![Treatment-effect estimates across simulated customer segments](docs/images/showcase_subgroups.png)
+| Conversion by assignment | Effect estimates and guardrails |
+|:---:|:---:|
+| [![Simulated treatment and control conversion comparison](docs/images/showcase_conversion.png)](docs/images/showcase_conversion.png) | [![Treatment effect and guardrail intervals](docs/images/showcase_effects.png)](docs/images/showcase_effects.png) |
 
-Segment estimates are exploratory, and multiplicity-adjusted p-values are provided in the aggregate evidence.
+The chronologically evaluated retention model achieved **0.641 ROC-AUC** and **0.406 average precision** on the reported 20,000-user simulation holdout. This is modest predictive discrimination, not evidence of successful intervention.
 
-## Power BI dashboard gallery
+<details>
+<summary><strong>Additional analysis: channels, retention and segments</strong></summary>
 
-The four-page report connects acquisition funnels, randomized experiment outcomes, retention cohorts, model evaluation, and quality checks.
+| Acquisition channels | Week-4 activity |
+| :---: | :---: |
+| [![Acquisition channels](docs/images/showcase_channel.png)](docs/images/showcase_channel.png) | [![Week-4 activity](docs/images/showcase_retention.png)](docs/images/showcase_retention.png) |
 
-### Executive overview
+| Exploratory segments |
+| :---: |
+| [![Exploratory segments](docs/images/showcase_subgroups.png)](docs/images/showcase_subgroups.png) |
 
-![Executive overview](docs/images/dashboard-executive-overview.png)
+Exploratory subgroup estimates are not independent confirmatory findings; their Holm-adjusted p-values are retained in the supporting evidence.
 
-### Conversion funnel
+</details>
 
-![Conversion funnel](docs/images/bigquery-ga4-funnel-results.png)
-
-### Cohort retention
-
-![Cohort retention](docs/images/dashboard-cohort-retention.png)
-
-### Model and data quality
-
-![Model and data quality](docs/images/dashboard-model-data-quality.png)
-
-## Engineering and analytical work
-
-| Workstream | Delivered capability |
-|---|---|
-| Data modeling | Seeded user assignments and event-level behavior with user-grain analytical outputs |
-| Product analytics | Funnel abandonment, customer cohorts, acquisition segments, and conversion reporting |
-| Experimentation | Two-proportion inference, effect-size confidence intervals, sample-ratio checks, Active Week 4 and Support Contact Day 14, and power planning |
-| Predictive analytics | Chronologically evaluated week-four activity model with explicit outcome timing |
-| Reporting | Power BI report plus committed portfolio graphics derived from aggregate metrics |
-| Quality engineering | Automated tests, user-grain validation, no silent deduplication, and CI |
-
-## Experiment decision context
-
-**Analytical classification:** `candidate_for_monitored_review`. The treatment has an estimated lift of **+2.76 pp** relative to control on synthetic outcomes. This is a simulated analytical case study, not evidence of realized revenue, causal business impact at a company, or a completed live rollout.
-
-The SRM test evaluates arm allocation. A nonsignificant guardrail result does **not** establish equivalence or prove the absence of harm. For deployment, longer observation windows, instrumentation audits, and commercially relevant constraints would remain necessary.
-
-## Architecture
+## Solution architecture
 
 ```mermaid
 flowchart LR
-  A[Seeded simulation] --> B[User and event tables]
-  B --> C[DuckDB and SQL]
-  C --> D[Funnel and cohort analytics]
-  B --> E[Experiment and power analysis]
-  B --> F[Time-aware retention model]
-  D --> G[Power BI and portfolio evidence]
-  E --> G
-  F --> G
+    A[Seeded assignments and events] --> B[Validated user and event tables]
+    B --> C[DuckDB and SQL marts]
+    C --> D[Funnel and cohort reports]
+    B --> E[Experiment analysis and guardrails]
+    B --> F[Time-aware retention model]
+    D --> G[Power BI]
+    E --> G
+    F --> G
 ```
 
-### Separate public-data analysis
+**Engineering highlights**
 
-The repository also includes `sql/bigquery_ga4_funnel.sql`, executed against Google's public, obfuscated GA4 ecommerce sample. This real-data SQL case study is distinct from the simulated subscription experiment.
+- **Event and user modeling:** separate event-grain observations from unique assignment and outcome records.
+- **Experiment validity:** allocation checks, proportion inference, confidence intervals, practical-effect criteria, and guardrails.
+- **Retention prediction:** chronological holdout and features available before the predicted observation window.
+- **Business intelligence:** funnel abandonment, cohort retention, acquisition-channel comparisons, and model/quality reporting.
+- **Quality:** deterministic generation, automated tests, code linting, and user-grain integrity checks.
 
+## Separate public-data analysis
+
+A BigQuery funnel analysis using Google's public, obfuscated GA4 ecommerce sample is included in [`sql/bigquery_ga4_funnel.sql`](sql/bigquery_ga4_funnel.sql). This is a separate dataset from the synthetic subscription experiment.
+
+## Repository map
+
+| Location | Contents |
+|---|---|
+| [`src/`](src/) and [`sql/`](sql/) | Data generation, model logic, DuckDB analytical views, BigQuery query |
+| [`experiment_validity/`](experiment_validity/) | User-grain experiment diagnostics and uncertainty reporting |
+| [`product_showcase/`](product_showcase/) | Aggregate evidence, analytics visuals, README generation |
+| [`docs/`](docs/) | Architecture, Power BI notes, model card, and case-study evidence |
+| [`tests/`](tests/), [`tests_experiment_validity/`](tests_experiment_validity/), [`tests_showcase/`](tests_showcase/) | Automated analytical and presentation checks |
 
 ## Technical evidence
 
-- [Experiment validity and decision report](docs/EXPERIMENT_VALIDITY_METHOD.md)
-- [Seeded-run aggregate evidence](docs/evidence/showcase/experiment_validity.json)
-- [Exploratory subgroup estimates with Holm correction](docs/evidence/showcase/segment_effects.json)
-- [Retention model card](docs/RETENTION_MODEL_CARD_SHOWCASE.md)
-- [Existing architecture and data grains](docs/architecture.md)
-- [Existing data dictionary](docs/data_dictionary.md)
-- [Existing decision memo](docs/decision_memo.md)
-- [Power BI documentation](docs/power_bi.md)
+[Experiment decision report](docs/evidence/showcase/experiment_validity_memo.md) · [Aggregate experiment results](docs/evidence/showcase/experiment_validity.json) · [Exploratory segments](docs/evidence/showcase/segment_effects.json) · [Retention model card](docs/RETENTION_MODEL_CARD_SHOWCASE.md) · [Architecture](docs/architecture.md) · [Power BI design](docs/power_bi.md)
 
-<details><summary>Reproducibility and local validation</summary>
+<details>
+<summary><strong>Reproducibility and local validation</strong></summary>
 
 ```powershell
 python -m pip install -r requirements.txt
@@ -115,10 +114,14 @@ python -m product_showcase.build --repo .
 python -m pytest -q
 ```
 
-Generated user-level records and local databases are excluded from Git; published evidence contains aggregate results and screenshots.
+Generated user-level datasets and local databases are not committed. The published charts are derived from aggregate simulation evidence.
 
 </details>
 
-## Author
+## Data and interpretation
 
-**Rishi Ratnakar** · [LinkedIn](https://www.linkedin.com/in/rishi-ratnakar/) · [GitHub](https://github.com/RishiRatnakarData)
+The treatment comparison is retrospective analysis of simulated outcomes, not a company A/B test or an observed causal business result. Nonsignificant guardrails do not establish equivalence. Real rollout decisions would require instrumentation verification, operational cost, and longitudinal evidence.
+
+---
+
+**Rishi Ratnakar** · [GitHub](https://github.com/RishiRatnakarData) · [LinkedIn](https://www.linkedin.com/in/rishi-ratnakar/)
