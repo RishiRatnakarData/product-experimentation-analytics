@@ -24,6 +24,34 @@ def _gallery(items: list[tuple[str, str]], columns: int = 2) -> list[str]:
     return lines
 
 
+def retention_summary(metrics: dict | None) -> str:
+    """Describe the actual evaluated holdout; never infer model quality from row count."""
+    if metrics is None:
+        return (
+            "Retention evaluation metrics are not available for this run. "
+            "See the model card for the evaluation protocol."
+        )
+    import math
+
+    values = []
+    for key in ("roc_auc", "average_precision"):
+        value = metrics.get(key)
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise ValueError(f"Retention metric {key} must be numeric")
+        if not math.isfinite(float(value)) or not 0 <= float(value) <= 1:
+            raise ValueError(f"Retention metric {key} must be finite and in [0, 1]")
+        values.append(float(value))
+    holdout = metrics.get("test_rows")
+    if isinstance(holdout, bool) or not isinstance(holdout, int) or holdout <= 0:
+        raise ValueError("Retention model test_rows must be a positive integer")
+    return (
+        f"The chronological retention-model holdout (n = {holdout:,}) achieved "
+        f"**{values[0]:.3f} ROC-AUC** and **{values[1]:.3f} average precision** "
+        "on simulated outcomes. These scores measure prediction, not the "
+        "impact of an intervention."
+    )
+
+
 def build_readme(
     repo: Path | None,
     report: dict,
@@ -33,6 +61,7 @@ def build_readme(
     events_count: int | None,
     *,
     real_data_note: bool,
+    retention_metrics: dict | None = None,
 ) -> str:
     """Create concise, gallery-first output using only measured synthetic-run results."""
     primary = report["primary"]
@@ -104,9 +133,7 @@ def build_readme(
             "|:---:|:---:|",
             "| [![Simulated treatment and control conversion comparison](docs/images/showcase_conversion.png)](docs/images/showcase_conversion.png) | [![Treatment effect and guardrail intervals](docs/images/showcase_effects.png)](docs/images/showcase_effects.png) |",
             "",
-            ("The chronologically evaluated retention model achieved **0.641 ROC-AUC** and **0.406 average precision** "
-             "on the reported 20,000-user simulation holdout. This is modest predictive discrimination, not evidence of successful intervention."
-             if observed_users == 20000 else "The retention model uses an independent, time-aware holdout; see the model card for its evaluated performance."),
+            retention_summary(retention_metrics),
             "",
             "<details>",
             "<summary><strong>Additional analysis: channels, retention and segments</strong></summary>",
@@ -118,7 +145,9 @@ def build_readme(
         ("Week-4 activity", "docs/images/showcase_retention.png"),
         ("Exploratory segments", "docs/images/showcase_subgroups.png"),
     ]
-    present = [(label, path) for label, path in additional if Path(path).name in chart_names]
+    present = [
+        (label, path) for label, path in additional if Path(path).name in chart_names
+    ]
     if present:
         lines.extend(_gallery(present, columns=2))
     lines.extend(

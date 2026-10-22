@@ -24,5 +24,10 @@
   "exploratory_subgroups": 7,
   "srm_flag": false,
   "decision": "candidate_for_monitored_review",
+  "retention_holdout": {
+    "test_rows": 3868,
+    "roc_auc": 0.6410240338721268,
+    "average_precision": 0.40576121080007743
+  },
   "note": "Not evidence of live product impact; aggregated result from deterministic simulation."
 }

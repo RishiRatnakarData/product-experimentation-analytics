@@ -147,6 +147,20 @@ def test_end_to_end_generates_only_aggregate_evidence(tmp_path, monkeypatch):
         return result[columns] if columns is not None else result
 
     monkeypatch.setattr(pd, "read_parquet", read_stub)
+
+    # Isolate model fitting: this test verifies reporting outputs.
+    def retention_stub(users, events, outcomes, output, predictions_output=None):
+        metrics = {
+            "train_rows": 150,
+            "test_rows": 50,
+            "roc_auc": 0.64,
+            "average_precision": 0.41,
+        }
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(json.dumps(metrics), encoding="utf-8")
+        return metrics
+
+    monkeypatch.setattr("src.retention.train_retention_model", retention_stub)
     result = build(tmp_path, require_users=n)
     assert result["users"] == n
     assert len(result["generated_chart_paths"]) >= 4

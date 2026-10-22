@@ -55,10 +55,30 @@ def discover_guardrails(frame: pd.DataFrame) -> tuple[tuple[str, str], ...]:
     return tuple(candidates)
 
 
-def build_readme(repo: Path, report: dict, images: list[tuple[str, str]], chart_names: list[str], observed_users: int, events_count: int | None, *, real_data_note: bool) -> str:
+def build_readme(
+    repo: Path,
+    report: dict,
+    images: list[tuple[str, str]],
+    chart_names: list[str],
+    observed_users: int,
+    events_count: int | None,
+    *,
+    real_data_note: bool,
+    retention_metrics: dict | None = None,
+) -> str:
     """Return the consolidated dashboard-first portfolio presentation."""
     from .presentation import build_readme as render_portfolio_readme
-    return render_portfolio_readme(repo, report, images, chart_names, observed_users, events_count, real_data_note=real_data_note)
+
+    return render_portfolio_readme(
+        repo,
+        report,
+        images,
+        chart_names,
+        observed_users,
+        events_count,
+        real_data_note=real_data_note,
+        retention_metrics=retention_metrics,
+    )
 
 
 def write_retention_card(repo: Path) -> None:
@@ -153,6 +173,17 @@ def build(repo: Path, *, require_users: int = 20000) -> dict:
     )
     if subgroup_chart(effects, imgs / "showcase_subgroups.png"):
         charts.append("showcase_subgroups.png")
+    # Derive retention metrics from the same users/outcomes used for this
+    # experiment report. A stored JSON may belong to a different seed.
+    from src.retention import train_retention_model
+
+    events_path = repo / "data/generated/events.parquet"
+    if not events_path.is_file():
+        raise ValueError("Missing events data for retention evaluation")
+    events = pd.read_parquet(events_path)
+    retention_metrics = train_retention_model(
+        users, events, outcomes, repo / "artifacts/retention_model_metrics.json"
+    )
     write_retention_card(repo)
     # Importantly, do not copy the entire generated dataset or holdout predictions into Git.
     evt_path = repo / "data/generated/events.parquet"
@@ -175,6 +206,7 @@ def build(repo: Path, *, require_users: int = 20000) -> dict:
         len(users),
         evt_count,
         real_data_note=real_data_note,
+        retention_metrics=retention_metrics,
     )
     (repo / "README.md").write_text(content, encoding="utf-8", newline="\n")
     manifest = {
@@ -189,6 +221,11 @@ def build(repo: Path, *, require_users: int = 20000) -> dict:
         "exploratory_subgroups": len(effects),
         "srm_flag": report["srm"]["flagged"],
         "decision": report["decision"],
+        "retention_holdout": {
+            "test_rows": retention_metrics["test_rows"],
+            "roc_auc": retention_metrics["roc_auc"],
+            "average_precision": retention_metrics["average_precision"],
+        },
         "note": "Not evidence of live product impact; aggregated result from deterministic simulation.",
     }
     (data_dir / "showcase_manifest.json").write_text(

@@ -46,7 +46,7 @@ The reporting layer brings the experiment, acquisition funnel, customer cohorts,
 |:---:|:---:|
 | [![Simulated treatment and control conversion comparison](docs/images/showcase_conversion.png)](docs/images/showcase_conversion.png) | [![Treatment effect and guardrail intervals](docs/images/showcase_effects.png)](docs/images/showcase_effects.png) |
 
-The chronologically evaluated retention model achieved **0.641 ROC-AUC** and **0.406 average precision** on the reported 20,000-user simulation holdout. This is modest predictive discrimination, not evidence of successful intervention.
+The chronological retention-model holdout (n = 3,868) achieved **0.641 ROC-AUC** and **0.406 average precision** on simulated outcomes. These scores measure prediction, not the impact of an intervention.
 
 <details>
 <summary><strong>Additional analysis: channels, retention and segments</strong></summary>
