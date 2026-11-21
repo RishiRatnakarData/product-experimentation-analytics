@@ -63,6 +63,12 @@ Exploratory subgroup estimates are not independent confirmatory findings; their 
 
 </details>
 
+## CUPED variance-reduction demonstration
+
+The existing simulated experiment already includes **sample-ratio mismatch diagnostics**. A separate, clearly fictional pre-experiment fixture now demonstrates **CUPED** with a verified-in-generator pre-treatment engagement score, comparing original and adjusted effects, standard errors, confidence intervals, and measured within-arm variance reduction. It does **not** alter the published experiment's treatment estimates or attribute new results to real customers.
+
+[**CUPED method, reproducible example, and limitations**](docs/CUPED_METHOD.md)
+
 ## Solution architecture
 
 ```mermaid
