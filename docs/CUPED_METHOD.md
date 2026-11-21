@@ -33,6 +33,10 @@ The adjustment coefficient is estimated from **pooled within-arm** covariance an
 
 Centering within randomized arms avoids mixing the treatment mean difference into the slope estimate. The treatment effect estimate is adjusted treatment mean minus adjusted control mean. Original and adjusted mean differences, approximate Welch standard errors, two-sided confidence intervals, and p-values are reported. We also report the **measured** reduction in pooled within-arm outcome variance, which is nonnegative by construction when the same data are used to fit the within-arm coefficient and measure the reduction. It is an **in-sample diagnostic**, not evidence of gains on future experiments. CUPED does not guarantee significance.
 
+## Reproducible published result
+
+A separate 3,000-user synthetic fixture (`seed=42`) produced 14.16% observed within-arm variance reduction; the original and adjusted treatment effects and uncertainty estimates are recorded in [the aggregate evidence JSON](evidence/showcase/cuped_synthetic.json). The test suite independently regenerates that evidence to detect drift. This is not the 20,000-user experiment, and no real-user result is claimed.
+
 ## Important limitations
 
 - The fixture is **fictional** and independent of the published 20,000-user subscription experiment. No business lift or retention change is attributed to it.

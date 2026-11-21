@@ -67,7 +67,9 @@ Exploratory subgroup estimates are not independent confirmatory findings; their 
 
 The existing simulated experiment already includes **sample-ratio mismatch diagnostics**. A separate, clearly fictional pre-experiment fixture now demonstrates **CUPED** with a verified-in-generator pre-treatment engagement score, comparing original and adjusted effects, standard errors, confidence intervals, and measured within-arm variance reduction. It does **not** alter the published experiment's treatment estimates or attribute new results to real customers.
 
-[**CUPED method, reproducible example, and limitations**](docs/CUPED_METHOD.md)
+A **separate 3,000-user seeded synthetic run** produced **14.16% observed within-arm variance reduction**, with standard error decreasing from **1.565 to 1.450 percentage points**. This in-sample result is independent of the main subscription experiment.
+
+[**Reproducible CUPED evidence**](docs/evidence/showcase/cuped_synthetic.json) · [**Method and limitations**](docs/CUPED_METHOD.md)
 
 ## Solution architecture
 

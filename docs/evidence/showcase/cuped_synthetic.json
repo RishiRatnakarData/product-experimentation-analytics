@@ -1,0 +1,43 @@
+{
+  "analysis_type": "separate_seeded_synthetic_cuped_experiment",
+  "source": "scripts.make_cuped_fixture and scripts.run_cuped",
+  "seed": 42,
+  "users": 3000,
+  "covariate": "pre_period_engagement_score",
+  "covariate_timing": "must_be_pre_randomization_or_pre_exposure; verify_from_source_metadata",
+  "control_users": 1518,
+  "treatment_users": 1482,
+  "original": {
+    "control_mean": 0.22134387351778656,
+    "treatment_mean": 0.26450742240215924,
+    "effect": 0.04316354888437268,
+    "standard_error": 0.01565159029431649,
+    "confidence_level": 0.95,
+    "ci_low": 0.012474517416534422,
+    "ci_high": 0.07385258035221094,
+    "p_value": 0.005855172330191176,
+    "welch_degrees_of_freedom": 2976.7668019929015,
+    "control_n": 1518,
+    "treatment_n": 1482
+  },
+  "cuped_adjusted": {
+    "control_mean": 0.22451828044841216,
+    "treatment_mean": 0.26125590437200424,
+    "effect": 0.03673762392359209,
+    "standard_error": 0.014498788568228406,
+    "confidence_level": 0.95,
+    "ci_low": 0.008308989515299237,
+    "ci_high": 0.06516625833188494,
+    "p_value": 0.011332751197138344,
+    "welch_degrees_of_freedom": 2984.0249527746105,
+    "control_n": 1518,
+    "treatment_n": 1482
+  },
+  "measured_variance_reduction_fraction": 0.14155243700154285,
+  "limitations": [
+    "Synthetic demonstration; the main 20,000-user experiment is unchanged.",
+    "Variance reduction is measured within the same sample used to fit theta.",
+    "Welch standard errors do not explicitly account for fitting theta.",
+    "No observed business lift or population-level improvement is claimed."
+  ]
+}
